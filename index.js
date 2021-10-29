@@ -41,6 +41,9 @@ await delay(2000)
 await page.goto(url)
 await delay(2000)
 
+page.type()
+await delay(2000)
+  
 // auth needed ...
 
 // page.click("button.close")
