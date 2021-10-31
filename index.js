@@ -18,7 +18,7 @@ const browserConfig = async () => {
 }
 
 // Authentification *Replace example@gmail.com
-const Authentification = async (page) => {
+const authentification = async (page) => {
   await page.type("input#labeled-input-signEmail", "example@gmail.com")
   await page.click("button.btn.login_to_3")
 
@@ -37,19 +37,19 @@ const Authentification = async (page) => {
   await page.click("div.signin-step-3 div.form-cells div.form-cell button#signInSubmit")
 }
 
-  
-const CheckStatus = async ()=>{
+// Login into Newegg account
+const login = async ()=>{
   let page = await browserConfig()
 
-  if(page.url() !== url){await Authentification(page)}
+  if(page.url() !== url){await authentification(page)}
 
   const authError = page.waitForSelector("p.color-red.text-align-center")
 
   // Resent one-time code login until user input correct code
   while (authError) {
     await page.reload()
-    await Authentification(page)
+    await authentification(page)
   }
 }
 
-CheckStatus()
+login()
