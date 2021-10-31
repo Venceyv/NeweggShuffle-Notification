@@ -17,15 +17,13 @@ const browserConfig = async () => {
   return page
 }
 
-// Authentification
-// Replace example@gmail.com
+// Authentification *Replace example@gmail.com
 const Authentification = async (page) => {
-  await page.type("input#labeled-input-signEmail", "steammingliu1@gmail.com")
+  await page.type("input#labeled-input-signEmail", "example@gmail.com")
   await page.click("button.btn.login_to_3")
 
-  await page.waitForSelector(
-    "div.signin-step-3 div.form-cells div.form-cell div.form-v-code [aria-label='verify code 5'"
-  )
+  // Wait for DOM update
+  await page.waitForSelector("div.signin-step-3 div.form-cells div.form-cell div.form-v-code [aria-label='verify code 5'")
 
   // Wait for user input one-time code
   await page.waitForFunction(() => {
