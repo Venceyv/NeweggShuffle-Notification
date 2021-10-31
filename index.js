@@ -19,7 +19,7 @@ const browserConfig = async () => {
 
 // Authentification *Replace example@gmail.com*
 const authentification = async (page) => {
-  await page.type("input#labeled-input-signEmail", "steammingliu1@gmail.com")
+  await page.type("input#labeled-input-signEmail", "example@gmail.com")
   await page.click("button.btn.login_to_3")
 
   // Wait for DOM update
