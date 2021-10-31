@@ -1,62 +1,57 @@
-const puppeteer = require('puppeteer')
+const puppeteer = require("puppeteer")
 
 const url = "https://www.newegg.com/product-shuffle"
 
-// const configBrowser = async () => {
-//     const browser = await puppeteer.launch({headless: false})
-//     const page = await browser.newPage()
-//     await page.goto(url)
-//     return page
-// }
-
-// const statusCheck = async (page) => {
-//     // await page.reload()
-//     let html = await page.evaluate(()=>{
-//         const stat = document.querySelector(".col-lg-6.intro-content p")
-//         return stat.innerText
-//     })
-// }
-
-// const monitor = async () => {
-//     let page = await configBrowser()
-//     let content = await statusCheck(page)
-//     console.log(content)
-// }
-
-// monitor()
-const delay = time => {
-  return new Promise(function (resolve,reject) {
+const delay = (time) => {
+  return new Promise(function (resolve, reject) {
     setTimeout(resolve, time)
   })
 }
 
-const monitor = async () => {
-const browser = await puppeteer.launch({
-  headless: false,
-  slowMo: 30,
-  args: ["--window-size=1920,1080"],
-})
-const page = await browser.newPage()
-await delay(2000)
-await page.goto(url)
-await delay(2000)
-
-// auth needed ...
-
-// page.click("button.close")
-
-// const stat = await page.evaluate(() => {
-//     const statCheck = document.querySelector("h5.modal-title")
-//     return statCheck.innerText
-// })
-
-// console.log(stat)
-// await page.waitForTimeout(4000)
-
-// await delay(2000)
-await page.goto(url)
-await browser.close()
-
+// Configure
+const browserConfig = async () => {
+  const browser = await puppeteer.launch({ headless: false })
+  const page = await browser.newPage()
+  await page.goto(url)
+  await page.goto(url)
+  return page
 }
 
-monitor()
+// Authentification
+// Replace example@gmail.com
+const Authentification = async (page) => {
+  await page.type("input#labeled-input-signEmail", "steammingliu1@gmail.com")
+  await page.click("button.btn.login_to_3")
+
+  await page.waitForSelector(
+    "div.signin-step-3 div.form-cells div.form-cell div.form-v-code [aria-label='verify code 5'"
+  )
+
+  // Wait for user input one-time code
+  await page.waitForFunction(() => {
+    const verifyCode = document.querySelector(
+      "div.signin-step-3 div.form-cells div.form-cell div.form-v-code [aria-label='verify code 6'"
+    ).value
+    return verifyCode != ""
+  })
+
+  await delay(3000)
+  await page.click("div.signin-step-3 div.form-cells div.form-cell button#signInSubmit")
+}
+
+  
+const CheckStatus = async ()=>{
+  let page = await browserConfig()
+
+  if(page.url() !== url){await Authentification(page)}
+
+  const authError = page.waitForSelector("p.color-red.text-align-center")
+
+  // Resent one-time code login until user input correct code
+  while (authError) {
+    await page.reload()
+    await Authentification(page)
+  }
+}
+
+CheckStatus()
