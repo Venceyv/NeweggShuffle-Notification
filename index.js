@@ -79,14 +79,21 @@ const checkStatus = async () => {
   })
 
   const timer = await page.evaluate(()=> {
-    const time = document.querySelectorAll("div#Countdown_1")
-    let timerList = [];
+    const time = document.querySelectorAll("div#Countdown_1 span")
+    let timerList = []
     time.forEach((timing)=>{
       timerList.push(timing.innerText)
     })
+    return timerList
   })
 
   console.log(shuffleStatus)
+  timer.forEach((time, i)=> {
+    console.log(time);
+    if(i%2 != 0){
+      console.log(":");
+    }
+  })
 }
 
 checkStatus()
