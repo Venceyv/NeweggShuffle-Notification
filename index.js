@@ -88,11 +88,10 @@ const checkStatus = async () => {
   })
 
   console.log(shuffleStatus)
+
   timer.forEach((time, i)=> {
     console.log(time);
-    if(i%2 != 0){
-      console.log(":");
-    }
+    if(i%2 != 0){console.log(":");}
   })
 }
 
