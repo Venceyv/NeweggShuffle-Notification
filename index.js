@@ -46,20 +46,20 @@ const login = async (page) => {
   }
 }
 
-const checkStatus = async () => {
-  let page = await browserConfig()
-  page = await login(page)
-  await page.screenshot({ path: "screenshot1.png" })
+// close popups
+const closePopUp = async(page) =>{
   const popUp = await page.waitForFunction(
-    ()=>{const popUp = document.querySelector(
-    "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content")
-    return popUp
-  }, {timeout:5000}
+    () => {
+      const popUp = document.querySelector(
+        "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content"
+      )
+      return popUp
+    },
+    { timeout: 5000 }
   )
-  
+
   // pop up window exist  =>  Shuffle Closed
-  if(popUp)
-  {
+  if (popUp) {
     await page.click(
       "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
     )
@@ -72,6 +72,38 @@ const checkStatus = async () => {
       "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
     )
   }
+
+  return page
+}
+
+const checkStatus = async () => {
+  let page = await browserConfig()
+  page = await login(page)
+  // await page.screenshot({ path: "screenshot1.png" })
+  const popUp = await page.waitForFunction(
+    ()=>{const popUp = document.querySelector(
+    "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content")
+    return popUp
+  }, {timeout:5000}
+  )
+  
+  // pop up window exist  =>  Shuffle Closed
+  // if(popUp)
+  // {
+  //   await page.click(
+  //     "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
+  //   )
+  // }
+
+  // await delay(4000)
+  // // second pop up
+  // if (popUp) {
+  //   await page.click(
+  //     "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
+  //   )
+  // }
+
+  page = await closePopUp(page)
 
   const shuffleStatus = await page.evaluate(()=>{
     const status = document.querySelector("section.page-section.page-section-hero div.page-section-info div.bg-wide-flag")
