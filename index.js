@@ -20,7 +20,7 @@ const browserConfig = async () => {
 
 // Authentification *Replace example@gmail.com*
 const authentification = async (page) => {
-  await page.type("input#labeled-input-signEmail", "steammingliu1@gmail.com")
+  await page.type("input#labeled-input-signEmail", "example@gmail.com")
   await page.click("button.btn.login_to_3")
 
   // Wait for DOM update
@@ -72,10 +72,10 @@ const closePopUp = async(page) =>{
       "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
     )
   }
-
   return page
 }
 
+// check status
 const checkStatus = async () => {
   let page = await browserConfig()
   page = await login(page)
