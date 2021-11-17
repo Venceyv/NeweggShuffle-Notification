@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer")
-
+const CronJob = require("cron")
 const url = "https://www.newegg.com/product-shuffle"
 
 // delay function
@@ -79,29 +79,12 @@ const closePopUp = async(page) =>{
 const checkStatus = async () => {
   let page = await browserConfig()
   page = await login(page)
-  // await page.screenshot({ path: "screenshot1.png" })
-  const popUp = await page.waitForFunction(
-    ()=>{const popUp = document.querySelector(
-    "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content")
-    return popUp
-  }, {timeout:5000}
-  )
-  
-  // pop up window exist  =>  Shuffle Closed
-  // if(popUp)
-  // {
-  //   await page.click(
-  //     "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
-  //   )
-  // }
-
-  // await delay(4000)
-  // // second pop up
-  // if (popUp) {
-  //   await page.click(
-  //     "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
-  //   )
-  // }
+  // const popUp = await page.waitForFunction(
+  //   ()=>{const popUp = document.querySelector(
+  //   "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content")
+  //   return popUp
+  // }, {timeout:5000}
+  // )
 
   page = await closePopUp(page)
 
@@ -121,10 +104,23 @@ const checkStatus = async () => {
 
   console.log(shuffleStatus)
 
+  let timeLeft = ""
+
   timer.forEach((time, i)=> {
-    console.log(time);
-    if(i%2 != 0){console.log(":");}
+    timeLeft = timeLeft + time 
+    if(i%2 != 0){timeLeft = timeLeft + ":"}
   })
+
+  console.log(timeLeft)
 }
 
-checkStatus()
+// runs on schedule of every 15 seconds
+const trackStatus = async () => {
+  let newJob = new CronJob('*/15 * * * * *', ()=>{
+    checkStatus()
+  }, null,true,null,null,true)
+  newJob.start()
+}
+
+trackStatus();
+
