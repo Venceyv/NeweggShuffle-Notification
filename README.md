@@ -36,6 +36,6 @@ Set time interval in minutes (line 152).
 
 `node parse` to run.
 
-enter verification code when asked.
+Enter verification code when asked.
 
 Do not click ***Sign In*** button after entering verification code.
