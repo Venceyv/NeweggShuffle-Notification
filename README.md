@@ -39,3 +39,5 @@ Set time interval in minutes (line 152).
 Enter verification code when asked.
 
 Do not click ***Sign In*** button after entering verification code.
+
+Email will be sent every `userNum` minutes.
