@@ -17,7 +17,7 @@ Replace `example@gmail.com` with Newegg login email (line 27).
      
      
 Replace `example@gmail.com` with receiving email (line 142).
-Replace `example@gmail.com` with verified sendgrid email (line 143).
+Replace `example@gmail.com` with verified sendgrid sender email (line 143).
     
     const email = {
     to: 'example@gmail.com',
