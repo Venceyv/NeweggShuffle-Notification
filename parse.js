@@ -1,5 +1,5 @@
 const puppeteer = require("puppeteer")
-const CronJob = require("cron")
+const CronJob = require("cron").CronJob
 const url = "https://www.newegg.com/product-shuffle"
 
 // delay function
@@ -20,7 +20,7 @@ const browserConfig = async () => {
 
 // Authentification *Replace example@gmail.com*
 const authentification = async (page) => {
-  await page.type("input#labeled-input-signEmail", "example@gmail.com")
+  await page.type("input#labeled-input-signEmail", "steammingliu1rotmg@gmail.com")
   await page.click("button.btn.login_to_3")
 
   // Wait for DOM update
@@ -60,43 +60,54 @@ const closePopUp = async(page) =>{
 
   // pop up window exist  =>  Shuffle Closed
   if (popUp) {
+    try{
     await page.click(
       "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
     )
+    }catch{
+      console.log("");
+    }
   }
 
   await delay(4000)
   // second pop up
   if (popUp) {
-    await page.click(
-      "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
-    )
+    try {
+      await page.click(
+        "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content div.modal-header button.close"
+      )
+    }catch {
+      console.log("")
+    }
   }
   return page
 }
 
-// check status
-const checkStatus = async () => {
+// user login
+const userLogin = async () => {
   let page = await browserConfig()
   page = await login(page)
-  // const popUp = await page.waitForFunction(
-  //   ()=>{const popUp = document.querySelector(
-  //   "#Popup_Later_Visit div.modal-dialog.modal-dialog-centered div.modal-content")
-  //   return popUp
-  // }, {timeout:5000}
-  // )
+  return page
+}
 
+// check time
+const checkStatus= async(page)=>{
+  await page.reload()
   page = await closePopUp(page)
 
-  const shuffleStatus = await page.evaluate(()=>{
-    const status = document.querySelector("section.page-section.page-section-hero div.page-section-info div.bg-wide-flag")
-    return status.innerText 
+  // obtain shuffle status
+  const shuffleStatus = await page.evaluate(() => {
+    const status = document.querySelector(
+      "section.page-section.page-section-hero div.page-section-info div.bg-wide-flag"
+    )
+    return status.innerText
   })
 
-  const timer = await page.evaluate(()=> {
+  // obtain countdown time
+  const timer = await page.evaluate(() => {
     const time = document.querySelectorAll("div#Countdown_1 span")
     let timerList = []
-    time.forEach((timing)=>{
+    time.forEach((timing) => {
       timerList.push(timing.innerText)
     })
     return timerList
@@ -104,23 +115,30 @@ const checkStatus = async () => {
 
   console.log(shuffleStatus)
 
+  // format countdown time with ":"
   let timeLeft = ""
-
-  timer.forEach((time, i)=> {
-    timeLeft = timeLeft + time 
-    if(i%2 != 0){timeLeft = timeLeft + ":"}
+  timer.forEach((time, i) => {
+    timeLeft = timeLeft + time
+    if (i % 2 != 0 && i < 5 ) {
+      timeLeft = timeLeft + ":"
+    }
   })
 
   console.log(timeLeft)
 }
 
-// runs on schedule of every 15 seconds
+//@ change desired minutes
+const userNum = 30
+
+// runs on schedule of every userNum minutes
 const trackStatus = async () => {
-  let newJob = new CronJob('*/15 * * * * *', ()=>{
-    checkStatus()
+  let page = await userLogin()
+  let newJob = new CronJob(`*/${userNum} * * * * *`, ()=>{
+    checkStatus(page)
   }, null,true,null,null,true)
   newJob.start()
 }
 
-trackStatus();
+
+trackStatus()
 
