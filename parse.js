@@ -1,6 +1,10 @@
+require('dotenv').config()
 const puppeteer = require("puppeteer")
 const CronJob = require("cron").CronJob
+const sgMail = require("@sendgrid/mail")
 const url = "https://www.newegg.com/product-shuffle"
+sgMail.setApiKey(process.env.SENDGRID_API_KEY)
+// const apikey = `${process.env.SENDGRID_API_KEY}`
 
 // delay function
 const delay = (time) => {
@@ -18,9 +22,9 @@ const browserConfig = async () => {
   return page
 }
 
-// Authentification *Replace example@gmail.com*
+// Authentification *replace example@gmail.com*
 const authentification = async (page) => {
-  await page.type("input#labeled-input-signEmail", "steammingliu1rotmg@gmail.com")
+  await page.type("input#labeled-input-signEmail", "example@gmail.com")
   await page.click("button.btn.login_to_3")
 
   // Wait for DOM update
@@ -46,7 +50,7 @@ const login = async (page) => {
   }
 }
 
-// close popups
+// Close popups
 const closePopUp = async(page) =>{
   const popUp = await page.waitForFunction(
     () => {
@@ -83,18 +87,19 @@ const closePopUp = async(page) =>{
   return page
 }
 
-// user login
+// User login
 const userLogin = async () => {
   let page = await browserConfig()
   page = await login(page)
   return page
 }
 
-// check time
+// Check time
 const checkStatus= async(page)=>{
   await page.reload()
   page = await closePopUp(page)
 
+  await delay(2000)
   // obtain shuffle status
   const shuffleStatus = await page.evaluate(() => {
     const status = document.querySelector(
@@ -125,20 +130,35 @@ const checkStatus= async(page)=>{
   })
 
   console.log(timeLeft)
+  sendEmail('Newegg Shuffle Status', 
+  `${shuffleStatus}\Time Left: ${timeLeft}.
+  \Newegg Shuffle Link: ${url}`)
+  console.log('Notification Sent!!');
 }
 
-//@ change desired minutes
-const userNum = 30
+//@ send email notification
+const sendEmail = (subject,body) =>{
+  const email = {
+    to: 'example@gmail.com',
+    from: 'example@gmail.com',
+    subject: subject,
+    text: body,
+    html: body
+  }
+  return sgMail.send(email)
+}
 
-// runs on schedule of every userNum minutes
+//@ Change desired minutes
+const userNum = 20
+
+// Runs on schedule of every userNum minutes
 const trackStatus = async () => {
   let page = await userLogin()
-  let newJob = new CronJob(`*/${userNum} * * * * *`, ()=>{
+  let newJob = new CronJob(`0 */${userNum} * * * *`, ()=>{
     checkStatus(page)
-  }, null,true,null,null,true)
+  })
   newJob.start()
 }
-
 
 trackStatus()
 
