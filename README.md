@@ -4,20 +4,20 @@ Download dependencies used -> run:
           
     npm i
 
-In .env file, replace `your_api_key` with sendgrid api key
+In .env file, replace `your_api_key` with sendgrid api key.
 
     SENDGRID_API_KEY=your_api_key
     
     
 ***parse.js:***
 
-Replace `example@gmail.com` with Newegg login email (line 27)
+Replace `example@gmail.com` with Newegg login email (line 27).
 
     await page.type("input#labeled-input-signEmail", "example@gmail.com")
      
      
-Replace `example@gmail.com` with receiving email (line 142)
-Replace `example@gmail.com` with verified sendgrid email (line 143)
+Replace `example@gmail.com` with receiving email (line 142).
+Replace `example@gmail.com` with verified sendgrid email (line 143).
     
     const email = {
     to: 'example@gmail.com',
@@ -27,8 +27,15 @@ Replace `example@gmail.com` with verified sendgrid email (line 143)
     html: body
     }
 
-Set time interval in minutes (line 152)
+Set time interval in minutes (line 152).
 
     const userNum = 20
 
-  
+
+***RUN:***
+
+`node parse` to run.
+
+enter verification code when asked.
+
+Do not click ***Sign In*** button after entering verification code.
