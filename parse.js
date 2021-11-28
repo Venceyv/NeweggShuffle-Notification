@@ -4,7 +4,7 @@ const CronJob = require("cron").CronJob
 const sgMail = require("@sendgrid/mail")
 const url = "https://www.newegg.com/product-shuffle"
 sgMail.setApiKey(process.env.SENDGRID_API_KEY)
-// const apikey = `${process.env.SENDGRID_API_KEY}`
+
 
 // delay function
 const delay = (time) => {
