@@ -22,9 +22,9 @@ const browserConfig = async () => {
   return page
 }
 
-// Authentification *replace example@gmail.com*
+// Authentification
 const authentification = async (page) => {
-  await page.type("input#labeled-input-signEmail", "example@gmail.com")
+  await page.type("input#labeled-input-signEmail", process.env.USER_EMAIL)
   await page.click("button.btn.login_to_3")
 
   // Wait for DOM update
@@ -139,8 +139,8 @@ const checkStatus= async(page)=>{
 //@ send email notification
 const sendEmail = (subject,body) =>{
   const email = {
-    to: 'example@gmail.com',
-    from: 'example@gmail.com',
+    to: process.env.USER_EMAIL,
+    from: process.env.SENDGRID_SENDER_EMAIL,
     subject: subject,
     text: body,
     html: body
