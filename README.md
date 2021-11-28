@@ -4,6 +4,7 @@ Download dependencies used -> run:
           
     npm i
 ***.env:***
+
 replace `your_api_key` with sendgrid api key.
 
     SENDGRID_API_KEY=your_api_key
